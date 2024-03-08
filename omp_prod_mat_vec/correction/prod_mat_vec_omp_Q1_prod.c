@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <libgen.h>
 #include <math.h>
-#include <omp.h>
+#include </usr/local/Cellar/libomp/17.0.6/include/omp.h>
 
 
 /*
@@ -206,11 +206,13 @@ void prod_mat_vec_omp(sparse_matrix_t *A, vector_t *X, vector_t *Y)
     int i, j, k;
     double accu;
 
+// protect local variables, private(i) no needed
+// or declare variables locally
 #pragma omp parallel for schedule(runtime) private(i,k,j,accu)
     for(i = 0 ; i < A->N ; i++)
     {
         accu = 0.;
-
+        // omp parallel for reduction(+:accu)
         for(k = 0 ; k < A->ncol[i] ; k++)
         {
             j = A->col[i][k];

@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <libgen.h>
 #include <math.h>
-#include <omp.h>
+#include </usr/local/Cellar/libomp/17.0.6/include/omp.h>
 
 
 /*
@@ -42,7 +42,7 @@ double drand(seed_t *sd)
 struct vector_s
 {
     int N;          /* Vecteur de dimension N */
-    double *elt;    /* elt[i] : i-ieme element du vecteur*/
+    double *elt;    /* elt[k] : k-ieme element du vecteur*/
 };
 typedef struct vector_s vector_t;
 
@@ -86,6 +86,22 @@ int is_equal(vector_t *vec1, vector_t *vec2)
 }
 
 
+int is_equal_omp(vector_t *vec1, vector_t *vec2)
+{
+    assert(vec1->N == vec2->N);
+
+    int nb_diff = 0;
+
+    #pragma omp parallel for private(nb_diff)
+    for(int i = 0 ; i < vec1->N ; i++)
+    {
+        if (vec1->elt[i] != vec2->elt[i])
+        {
+            nb_diff++;
+        }
+    }
+    return nb_diff == 0;
+}
 
 
 
@@ -198,7 +214,30 @@ void prod_mat_vec(sparse_matrix_t *A, vector_t *X, vector_t *Y)
     }
 }
 
+/*
+   Produit Matrice-Vecteur parallélisé
+*/
+void prod_mat_vec_omp(sparse_matrix_t *A, vector_t *X, vector_t *Y)
+{
+    assert(A->N == X->N);
+    assert(Y->N == X->N);
 
+    int i, j, k;
+    double accu;
+
+    for(i = 0 ; i < A->N ; i++)
+    {
+        accu = 0.;
+
+        for(k = 0 ; k < A->ncol[i] ; k++)
+        {
+            j = A->col[i][k];
+            accu += A->elt[i][k] * X->elt[j];
+        }
+
+        Y->elt[i] = accu;
+    }
+}
 
 /*
    Main

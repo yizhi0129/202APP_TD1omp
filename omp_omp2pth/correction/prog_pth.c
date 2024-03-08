@@ -50,7 +50,8 @@ int main(int argc, char **argv)
     tid = (pthread_t*)malloc(nthreads*sizeof(pthread_t));
     all_args = (func_args_t*)malloc(nthreads*sizeof(func_args_t));
 
-    for(t = 1 ; t < nthreads ; t++)
+    // (nthreads-1) threads created but the master thread exists already
+    for(t = 1 ; t < nthreads ; t++) 
     {
         all_args[t].rank = t;
         all_args[t].N    = N;

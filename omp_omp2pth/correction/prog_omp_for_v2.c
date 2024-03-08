@@ -15,7 +15,7 @@ int main(int argc, char **argv)
             printf("Je suis le maitre !\n");
         }
 
-#pragma omp for schedule(static) reduction(+:sum)
+#pragma omp for schedule(static) reduction(+:sum) // clause reduction : protection et efficacité
         for(i = 0 ; i < N ; i++)
         {
             sum += i;
