@@ -4,7 +4,11 @@ Pour compiler un programme C utilisant OpenMP avec le compilateur `gcc` :
 ```
 % gcc -fopenmp  source.c  -o monprog
 ```
--lm problème de lien
+
+```
+% -lm
+```
+problème de lien
 
 La variable d'environnement `OMP_NUM_THREADS` permet de spécifier le nombre de threads OpenMP :
 ```
